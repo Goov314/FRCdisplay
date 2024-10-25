@@ -71,8 +71,8 @@ if team:
           matchdatajson = response.json()
           bluealliance = matchdatajson["MatchScores"][0]["alliances"][0]
           redalliance = matchdatajson["MatchScores"][0]["alliances"][1]
-          score.append("Blue: " + str(bluealliance["totalPoints"]) + " Red: " + str(redalliance["totalPoints"]))
-          rp.append("Blue: " + str(bluealliance["rp"]) + " Red: " + str(redalliance["rp"]))
+          score.append("Red: " + str(redalliance["totalPoints"]) + " Blue: " + str(bluealliance["totalPoints"]))
+          rp.append("Red: " + str(redalliance["rp"]) + " Blue: " + str(bluealliance["rp"]))
 
           for i in range(len(match["teams"])): 
               matchdata[i].append(str(match["teams"][i]["teamNumber"]))
