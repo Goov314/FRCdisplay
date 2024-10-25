@@ -7,7 +7,20 @@ st.title("FRC Display")
 year = str(datetime.datetime.now().year)
 team = st.text_input("Team Number", placeholder="1234")
 
+
+
 if team:
+  url = f"https://frc-api.firstinspires.org/v3.0/{year}/teams?teamNumber={team}"
+  payload={}
+  headers = {
+    'Authorization': 'Basic Z29vdjMxNDo0MWM3NGY2My03ODEzLTQ5OTMtODFjNS1hMTZjMzM4NTk1YWI=',
+    'If-Modified-Since': ''
+  }
+  response = requests.request("GET", url, headers=headers, data=payload)
+  teamdata = response.json()["teams"][0]
+
+  st.write("Team " + team + ", " + teamdata["nameShort"] + ", from " + teamdata["schoolName"] + " in " + teamdata["city"] + ", " + teamdata["stateProv"] + ", " + teamdata["country"] + ". Rookie Year: " + str(teamdata["rookieYear"]))
+
   url = f"https://frc-api.firstinspires.org/v3.0/{year}/events?eventCode=&teamNumber={team}&districtCode=&excludeDistrict=&weekNumber&tournamentType"
   payload={}
   headers = {
@@ -54,6 +67,7 @@ if team:
     blue3 = []
     score = []
     rp = []
+    teamrp = 0
     matchdata = [red1, red2, red3, blue1, blue2, blue3]
     with st.spinner(text="Fetching Data..."):
       for match in scheduledata["Schedule"]:
@@ -76,7 +90,11 @@ if team:
 
           for i in range(len(match["teams"])): 
               matchdata[i].append(str(match["teams"][i]["teamNumber"]))
-            
+              if i <= 2 and str(match["teams"][i]["teamNumber"]) == team:
+                teamrp += redalliance["rp"]
+              elif i >= 2 and str(match["teams"][i]["teamNumber"]) == team:
+                teamrp += bluealliance["rp"]
+
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/rankings/{currentevent}?teamNumber={team}"
     payload={}
     headers = {
@@ -86,11 +104,11 @@ if team:
     response = requests.request("GET", url, headers=headers, data=payload)
     rankdata = response.json()
 
-    st.write("Team: " + team)
     st.write("Rank: " + str(rankdata["Rankings"][0]["rank"]))
     st.write("W/T/L: " + str(rankdata["Rankings"][0]["wins"]) + "/" + str(rankdata["Rankings"][0]["ties"]) + "/" + str(rankdata["Rankings"][0]["losses"]))
     st.write("Matches Played: " + str(rankdata["Rankings"][0]["matchesPlayed"]))
     st.write("Qualification Average Points: " + str(rankdata["Rankings"][0]["qualAverage"]))
+    st.write("Total Ranking Points: " + str(teamrp))
 
     # st.write("Rank: " + str(rankdata["Rankings"][0]["rank"]) + " --- " + "W/T/L: " + str(rankdata["Rankings"][0]["wins"]) + "/" + str(rankdata["Rankings"][0]["ties"]) + "/" + str(rankdata["Rankings"][0]["losses"]) + " --- " + "Matches Played: " + str(rankdata["Rankings"][0]["matchesPlayed"]) + " --- " + "Qualification Average Points: " + str(rankdata["Rankings"][0]["qualAverage"]))
 
