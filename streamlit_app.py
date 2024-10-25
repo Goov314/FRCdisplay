@@ -55,7 +55,7 @@ if team:
     score = []
     rp = []
     matchdata = [red1, red2, red3, blue1, blue2, blue3]
-    with st.spinner():
+    with st.spinner(text="Fetching Data"):
       for match in scheduledata["Schedule"]:
           matchnumber.append(match["description"])
           matchtime = datetime.datetime.fromisoformat(match["startTime"])
