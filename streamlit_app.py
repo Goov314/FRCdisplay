@@ -55,7 +55,6 @@ if team:
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     scheduledata = response.json()
-    #eventstartdate = datetime.datetime.fromisoformat(scheduledata["Schedule"][0]["startTime"]).strftime("%B %d %Y")
 
     matchnumber = []
     starttime = []
