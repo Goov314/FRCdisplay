@@ -34,7 +34,15 @@ def getcompetitions(team, year):
         currentevents.append(event["code"])
         eventstartdates.append(event["dateStart"])
         eventenddates.append(event["dateEnd"])
-    eventselect = st.selectbox("Select Event:", events)
+    
+    if "event" in st.query_params and st.query_params.event in events:
+        current_index = events.index(st.query_params.event)
+    else:
+        current_index = 0
+        
+    eventselect = st.selectbox("Select Event:", events, index=current_index)
+    if eventselect:
+        st.query_params.event = eventselect
     currentevent = currentevents[events.index(eventselect)]
     eventstartdate = datetime.datetime.fromisoformat(eventstartdates[events.index(eventselect)]).strftime("%B %d %Y")
     eventenddate = datetime.datetime.fromisoformat(eventenddates[events.index(eventselect)]).strftime("%B %d %Y")

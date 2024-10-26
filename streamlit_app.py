@@ -20,7 +20,12 @@ if team:
   st.write("Team " + team + ", " + teamdata["nameShort"] + ", from " + teamdata["schoolName"] + " in " + teamdata["city"] + ", " + teamdata["stateProv"] + ", " + teamdata["country"] + ". Rookie Year: " + str(teamdata["rookieYear"]))
   
   currentevent, eventstartdate, eventenddate = getcompetitions(team, year)
-  level = st.selectbox("Level:", ("Qualification", "Playoff"))
+  
+  level_list = ["Qualification", "Playoff"]
+  levelindex = level_list.index(st.query_params.level) if "level" in st.query_params else 0
+  level = st.selectbox("Level:", level_list, index=levelindex)
+  if level:
+      st.query_params.level = level
 
   if currentevent and level:
     
