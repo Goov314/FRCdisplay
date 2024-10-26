@@ -3,6 +3,9 @@ import requests
 import pandas as pd
 import datetime
 
+
+token = st.secrets['TOKEN']
+
 st.title("FRC Display")
 year = str(datetime.datetime.now().year)
 team = st.text_input("Team Number", placeholder="1234")
@@ -13,7 +16,7 @@ if team:
   url = f"https://frc-api.firstinspires.org/v3.0/{year}/teams?teamNumber={team}"
   payload={}
   headers = {
-    'Authorization': 'Basic Z29vdjMxNDo0MWM3NGY2My03ODEzLTQ5OTMtODFjNS1hMTZjMzM4NTk1YWI=',
+    'Authorization': token,
     'If-Modified-Since': ''
   }
   response = requests.request("GET", url, headers=headers, data=payload)
@@ -24,7 +27,7 @@ if team:
   url = f"https://frc-api.firstinspires.org/v3.0/{year}/events?eventCode=&teamNumber={team}&districtCode=&excludeDistrict=&weekNumber&tournamentType"
   payload={}
   headers = {
-    'Authorization': 'Basic Z29vdjMxNDo0MWM3NGY2My03ODEzLTQ5OTMtODFjNS1hMTZjMzM4NTk1YWI=',
+    'Authorization': token,
     'If-Modified-Since': ''
   }
   response = requests.request("GET", url, headers=headers, data=payload)
@@ -50,7 +53,7 @@ if team:
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/schedule/{currentevent}?tournamentLevel={level}&teamNumber={team}"
     payload={}
     headers = {
-      'Authorization': 'Basic Z29vdjMxNDo0MWM3NGY2My03ODEzLTQ5OTMtODFjNS1hMTZjMzM4NTk1YWI=',
+      'Authorization': token,
       'If-Modified-Since': ''
     }
     response = requests.request("GET", url, headers=headers, data=payload)
@@ -77,7 +80,7 @@ if team:
           url = f"https://frc-api.firstinspires.org/v3.0/{year}/scores/{currentevent}/{level}?matchNumber={currentmatchnumber}"
           payload={}
           headers = {
-           'Authorization': 'Basic Z29vdjMxNDo0MWM3NGY2My03ODEzLTQ5OTMtODFjNS1hMTZjMzM4NTk1YWI=',
+           'Authorization': token,
            'If-Modified-Since': ''
           }
           response = requests.request("GET", url, headers=headers, data=payload)
@@ -97,7 +100,7 @@ if team:
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/rankings/{currentevent}?teamNumber={team}"
     payload={}
     headers = {
-      'Authorization': 'Basic Z29vdjMxNDo0MWM3NGY2My03ODEzLTQ5OTMtODFjNS1hMTZjMzM4NTk1YWI=',
+      'Authorization': token,
       'If-Modified-Since': ''
     }
     response = requests.request("GET", url, headers=headers, data=payload)
@@ -131,3 +134,38 @@ if team:
         return f'background-color: {color}'
 
     st.dataframe(scheduledf.style.applymap(highlight_team))
+
+    url = f"https://frc-api.firstinspires.org/v3.0/{year}/rankings/{currentevent}?top=10"
+    payload={}
+    headers = {
+      'Authorization': token,
+      'If-Modified-Since': ''
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    eventrankingdata = response.json()
+
+    teamrank = []
+    teamnumber = []
+    wtl = []
+    matchesplayed = []
+    avgpoints = []
+    for currentteam in eventrankingdata["Rankings"]:
+      teamrank.append(str(currentteam["rank"]))
+      teamnumber.append(str(currentteam["teamNumber"]))
+      wtl.append(str(currentteam["wins"]) + "/" + str(currentteam["ties"]) + "/" + str(currentteam["losses"]))
+      matchesplayed.append(str(currentteam["matchesPlayed"]))
+      avgpoints.append(str(currentteam["qualAverage"]))
+  
+    rankingdf = pd.DataFrame({
+        'Rank': teamrank,
+        'Team Number': teamnumber,
+        'Wins/Ties/Losses': wtl,
+        'Average Points': avgpoints,
+        'Matches Played': matchesplayed,
+    })
+    def highlight_team(s):
+      color = '#262730' if str(s) == str(team) else ''
+      return f'background-color: {color}'
+    st.subheader("Event Rankings")
+    st.dataframe(rankingdf.style.applymap(highlight_team))
+    
