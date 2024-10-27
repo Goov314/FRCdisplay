@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import pandas as pd
 import datetime
+from streamlit_autorefresh import st_autorefresh as autoref
+
 from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings
 
 token = st.secrets['TOKEN']
@@ -11,7 +13,6 @@ year = str(datetime.datetime.now().year)
 team = st.text_input("Team Number", 
           value=(st.query_params.team if "team" in st.query_params else None), 
           placeholder="1234")
-
 
 if team:
   st.query_params.team = team
@@ -39,3 +40,8 @@ if team:
     rankingdf = gettopteams(team, year, currentevent, level)
     
     displayrankings(team, rankingdf)
+
+checkbox = st.checkbox("Auto Refresh?", value=st.query_params.refresh if "refresh" in st.query_params else 0)
+if checkbox:
+  autoref(interval=60000)
+  st.query_params.refresh = checkbox
