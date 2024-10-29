@@ -46,7 +46,7 @@ def getcompetitions(team, year):
     currentevent = currentevents[events.index(eventselect)]
     eventstartdate = datetime.datetime.fromisoformat(eventstartdates[events.index(eventselect)]).strftime("%B %d %Y")
     eventenddate = datetime.datetime.fromisoformat(eventenddates[events.index(eventselect)]).strftime("%B %d %Y")
-    return(currentevent, eventstartdate, eventenddate)
+    return(currentevent, eventstartdate, eventenddate, events, currentevents)
 
 def getschedule(team, year, event, level):
       matchnumber = []
@@ -170,4 +170,47 @@ def displayrankings(team, rankingdf):
         return f'background-color: {color}'
       st.subheader("Event Rankings")
       st.dataframe(rankingdf.style.applymap(highlight_team))
+
+def getdistrictrank(team, year, events, eventcodes):
+    url = f"https://frc-api.firstinspires.org/v3.0/{year}/rankings/district?teamNumber={team}"
+    payload={}
+    headers = {
+      'Authorization': token,
+      'If-Modified-Since': ''
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    districtrankingdata = response.json()  
+    
+    rank = districtrankingdata["districtRanks"][0]["rank"]
+    totalrp = districtrankingdata["districtRanks"][0]["totalPoints"]
+    qdistrict = districtrankingdata["districtRanks"][0]["qualifiedDistrictCmp"]
+    qworlds = districtrankingdata["districtRanks"][0]["qualifiedFirstCmp"]
+    event1code = districtrankingdata["districtRanks"][0]["event1Code"]
+    event1pts = districtrankingdata["districtRanks"][0]["event1Points"]
+    event2code = districtrankingdata["districtRanks"][0]["event2Code"]
+    event2pts = districtrankingdata["districtRanks"][0]["event2Points"]
+    districtcompcode = districtrankingdata["districtRanks"][0]["districtCmpCode"]
+    districtcomppoints = districtrankingdata["districtRanks"][0]["districtCmpPoints"]
+
+    event1 = events[eventcodes.index(event1code)]
+    event2 = events[eventcodes.index(event2code)]
+    districtcomp = events[eventcodes.index(districtcompcode)]
+    qdist = ""
+    qworld = ""
+    if qdistrict == True:
+        qdist = "Yes"
+    else:
+        qdist = "No"
+    if qworlds == True:
+        qworld = "Yes"
+    else:
+        qworld = "No"
+
+    st.write("District Rank: " + str(rank) + " - Total Ranking Points: " + str(totalrp))
+    st.write("Event 1: " + event1 + " - Ranking Points: " + str(event1pts))
+    st.write("Event 2: " + event2 + " - Ranking Points: " + str(event2pts))
+    st.write("District Event: " + districtcomp + " - Ranking Points: " + str(districtcomppoints))
+    st.write("Qualified for District Event: " + qdist + " - Qualified for World Championships: " + qworld)
+
+
 

@@ -4,7 +4,7 @@ import pandas as pd
 import datetime
 from streamlit_autorefresh import st_autorefresh as autoref
 
-from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings
+from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings, getdistrictrank
 
 token = st.secrets['TOKEN']
 st.title("FRC Display")
@@ -19,8 +19,11 @@ if team:
 
   teamdata = getteamdata(team, year)
   st.write("Team " + team + ", " + teamdata["nameShort"] + ", from " + teamdata["schoolName"] + " in " + teamdata["city"] + ", " + teamdata["stateProv"] + ", " + teamdata["country"] + ". Rookie Year: " + str(teamdata["rookieYear"]))
-  
-  currentevent, eventstartdate, eventenddate = getcompetitions(team, year)
+  districtcode = teamdata["districtCode"]
+
+  currentevents = []
+  events = []
+  currentevent, eventstartdate, eventenddate, events, currentevents = getcompetitions(team, year)
   
   level_list = ["Qualification", "Playoff"]
   levelindex = level_list.index(st.query_params.level) if "level" in st.query_params else 0
@@ -40,6 +43,10 @@ if team:
     rankingdf = gettopteams(team, year, currentevent, level)
     
     displayrankings(team, rankingdf)
+
+    getdistrictrank(team, year, events, currentevents)
+
+
 
 checkbox = st.checkbox("Auto Refresh?", value=st.query_params.refresh if "refresh" in st.query_params else 0)
 if checkbox:
