@@ -44,7 +44,7 @@ if team:
     
     displayrankings(team, rankingdf)
 
-    getdistrictrank(team, year, events, currentevents)
+    getdistrictrank(team, year, districtcode, events, currentevents)
 
 
 

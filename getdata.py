@@ -171,7 +171,7 @@ def displayrankings(team, rankingdf):
       st.subheader("Event Rankings")
       st.dataframe(rankingdf.style.applymap(highlight_team))
 
-def getdistrictrank(team, year, events, eventcodes):
+def getdistrictrank(team, year, districtcode, events, eventcodes):
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/rankings/district?teamNumber={team}"
     payload={}
     headers = {
@@ -206,6 +206,7 @@ def getdistrictrank(team, year, events, eventcodes):
     else:
         qworld = "No"
 
+    st.subheader("District Rankings - " + districtcode)
     st.write("District Rank: " + str(rank) + " - Total Ranking Points: " + str(totalrp))
     st.write("Event 1: " + event1 + " - Ranking Points: " + str(event1pts))
     st.write("Event 2: " + event2 + " - Ranking Points: " + str(event2pts))
