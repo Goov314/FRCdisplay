@@ -121,6 +121,7 @@ def getteamrank(team, year, event, level):
       return(rankdata)
 
 def displayteamdata(rankdata, teamrp):
+    with st.expander("Team Data"):
       st.write("Rank: " + str(rankdata["Rankings"][0]["rank"]))
       st.write("W/T/L: " + str(rankdata["Rankings"][0]["wins"]) + "/" + str(rankdata["Rankings"][0]["ties"]) + "/" + str(rankdata["Rankings"][0]["losses"]))
       st.write("Matches Played: " + str(rankdata["Rankings"][0]["matchesPlayed"]))
@@ -128,11 +129,11 @@ def displayteamdata(rankdata, teamrp):
       st.write("Total Ranking Points: " + str(teamrp))
 
 def displayschedule(team, eventstartdate, eventenddate, scheduledf):
-      st.subheader("Event Schedule (" + eventstartdate + " - " + eventenddate + ")")
-      def highlight_team(s):
+      with st.expander("Event Schedule (" + eventstartdate + " - " + eventenddate + ")"):
+        def highlight_team(s):
           color = '#262730' if s == str(team) else ''
           return f'background-color: {color}'
-      st.dataframe(scheduledf.style.applymap(highlight_team))
+        st.dataframe(scheduledf.style.applymap(highlight_team))
 
 def gettopteams(team, year, event, level):
       teamrank = []
@@ -168,8 +169,8 @@ def displayrankings(team, rankingdf):
       def highlight_team(s):
         color = '#262730' if str(s) == str(team) else ''
         return f'background-color: {color}'
-      st.subheader("Event Rankings")
-      st.dataframe(rankingdf.style.applymap(highlight_team))
+      with st.expander("Event Rankings"):
+        st.dataframe(rankingdf.style.applymap(highlight_team))
 
 def getdistrictrank(team, year, districtcode, events, eventcodes):
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/rankings/district?teamNumber={team}"
@@ -206,12 +207,12 @@ def getdistrictrank(team, year, districtcode, events, eventcodes):
     else:
         qworld = "No"
 
-    st.subheader("District Rankings - " + districtcode)
-    st.write("District Rank: " + str(rank) + " - Total Ranking Points: " + str(totalrp))
-    st.write("Event 1: " + event1 + " - Ranking Points: " + str(event1pts))
-    st.write("Event 2: " + event2 + " - Ranking Points: " + str(event2pts))
-    st.write("District Event: " + districtcomp + " - Ranking Points: " + str(districtcomppoints))
-    st.write("Qualified for District Event: " + qdist + " - Qualified for World Championships: " + qworld)
+    with st.expander("District Rankings - " + districtcode):
+      st.write("District Rank: " + str(rank) + " - Total Ranking Points: " + str(totalrp))
+      st.write("Event 1: " + event1 + " - Ranking Points: " + str(event1pts))
+      st.write("Event 2: " + event2 + " - Ranking Points: " + str(event2pts))
+      st.write("District Event: " + districtcomp + " - Ranking Points: " + str(districtcomppoints))
+      st.write("Qualified for District Event: " + qdist + " - Qualified for World Championships: " + qworld)
 
 
 
