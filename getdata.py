@@ -203,14 +203,17 @@ def getdistrictrank(team, year, districtcode, events, eventcodes):
 
     event1 = events[eventcodes.index(event1code)]
     event2 = events[eventcodes.index(event2code)]
-    districtcomp = events[eventcodes.index(districtcompcode)]
+    if districtcompcode in eventcodes:
+      districtcomp = events[eventcodes.index(districtcompcode)]
+    else:
+      districtcomp = "N/A"
     qdist = ""
     qworld = ""
     if qdistrict == True:
         qdist = "Yes"
     else:
         qdist = "No"
-    if qworlds == True:
+    if qworlds == True: 
         qworld = "Yes"
     else:
         qworld = "No"
