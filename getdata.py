@@ -189,41 +189,42 @@ def getdistrictrank(team, year, districtcode, events, eventcodes):
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     districtrankingdata = response.json()  
-    
-    rank = districtrankingdata["districtRanks"][0]["rank"]
-    totalrp = districtrankingdata["districtRanks"][0]["totalPoints"]
-    qdistrict = districtrankingdata["districtRanks"][0]["qualifiedDistrictCmp"]
-    qworlds = districtrankingdata["districtRanks"][0]["qualifiedFirstCmp"]
-    event1code = districtrankingdata["districtRanks"][0]["event1Code"]
-    event1pts = districtrankingdata["districtRanks"][0]["event1Points"]
-    event2code = districtrankingdata["districtRanks"][0]["event2Code"]
-    event2pts = districtrankingdata["districtRanks"][0]["event2Points"]
-    districtcompcode = districtrankingdata["districtRanks"][0]["districtCmpCode"]
-    districtcomppoints = districtrankingdata["districtRanks"][0]["districtCmpPoints"]
 
-    event1 = events[eventcodes.index(event1code)]
-    event2 = events[eventcodes.index(event2code)]
-    if districtcompcode in eventcodes:
-      districtcomp = events[eventcodes.index(districtcompcode)]
-    else:
-      districtcomp = "N/A"
-    qdist = ""
-    qworld = ""
-    if qdistrict == True:
-        qdist = "Yes"
-    else:
-        qdist = "No"
-    if qworlds == True: 
-        qworld = "Yes"
-    else:
-        qworld = "No"
+    if districtrankingdata["districtRanks"]:
+      rank = districtrankingdata["districtRanks"][0]["rank"]
+      totalrp = districtrankingdata["districtRanks"][0]["totalPoints"]
+      qdistrict = districtrankingdata["districtRanks"][0]["qualifiedDistrictCmp"]
+      qworlds = districtrankingdata["districtRanks"][0]["qualifiedFirstCmp"]
+      event1code = districtrankingdata["districtRanks"][0]["event1Code"]
+      event1pts = districtrankingdata["districtRanks"][0]["event1Points"]
+      event2code = districtrankingdata["districtRanks"][0]["event2Code"]
+      event2pts = districtrankingdata["districtRanks"][0]["event2Points"]
+      districtcompcode = districtrankingdata["districtRanks"][0]["districtCmpCode"]
+      districtcomppoints = districtrankingdata["districtRanks"][0]["districtCmpPoints"]
 
-    with st.expander("District Rankings - " + districtcode):
-      st.write("District Rank: " + str(rank) + " - Total Ranking Points: " + str(totalrp))
-      st.write("Event 1: " + event1 + " - Ranking Points: " + str(event1pts))
-      st.write("Event 2: " + event2 + " - Ranking Points: " + str(event2pts))
-      st.write("District Event: " + districtcomp + " - Ranking Points: " + str(districtcomppoints))
-      st.write("Qualified for District Event: " + qdist + " - Qualified for World Championships: " + qworld)
+      event1 = events[eventcodes.index(event1code)]
+      event2 = events[eventcodes.index(event2code)]
+      if districtcompcode in eventcodes:
+        districtcomp = events[eventcodes.index(districtcompcode)]
+      else:
+        districtcomp = "N/A"
+      qdist = ""
+      qworld = ""
+      if qdistrict == True:
+          qdist = "Yes"
+      else:
+          qdist = "No"
+      if qworlds == True: 
+          qworld = "Yes"
+      else:
+          qworld = "No"
+
+      with st.expander("District Rankings - " + districtcode):
+        st.write("District Rank: " + str(rank) + " - Total Ranking Points: " + str(totalrp))
+        st.write("Event 1: " + event1 + " - Ranking Points: " + str(event1pts))
+        st.write("Event 2: " + event2 + " - Ranking Points: " + str(event2pts))
+        st.write("District Event: " + districtcomp + " - Ranking Points: " + str(districtcomppoints))
+        st.write("Qualified for District Event: " + qdist + " - Qualified for World Championships: " + qworld)
 
 def getawards(team, year, rookieyear):
     awardyear = []
