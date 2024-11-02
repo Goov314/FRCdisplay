@@ -26,27 +26,34 @@ def getcompetitions(team, year):
     data = response.json()
     events = []
     currentevents = []
-    eventstartdates = []
-    eventenddates = []
+    eventinfos = []
     for event in data["Events"]:
       if event["allianceCount"] == "EightAlliance":
         events.append(event["name"])
         currentevents.append(event["code"])
-        eventstartdates.append(event["dateStart"])
-        eventenddates.append(event["dateEnd"])
+        eventinfos.append("From **" + 
+                          datetime.datetime.fromisoformat(event["dateStart"]).strftime("%B %d %Y") + 
+                          "** to **" + 
+                          datetime.datetime.fromisoformat(event["dateEnd"]).strftime("%B %d %Y") +
+                          "** at **" + 
+                          event["venue"] + 
+                          "** - " + 
+                          event["address"] + ", " + 
+                          event["city"] + ", " + 
+                          event["stateprov"] + ", " + 
+                          event["country"])
     
     if "event" in st.query_params and st.query_params.event in events:
         current_index = events.index(st.query_params.event)
     else:
         current_index = 0
         
-    eventselect = st.selectbox("Select Event:", events, index=current_index)
+    eventselect = st.sidebar.selectbox("Select Event:", events, index=current_index)
     if eventselect:
         st.query_params.event = eventselect
     currentevent = currentevents[events.index(eventselect)]
-    eventstartdate = datetime.datetime.fromisoformat(eventstartdates[events.index(eventselect)]).strftime("%B %d %Y")
-    eventenddate = datetime.datetime.fromisoformat(eventenddates[events.index(eventselect)]).strftime("%B %d %Y")
-    return(currentevent, eventstartdate, eventenddate, events, currentevents)
+    eventinfo = "**" + eventselect + "** " + (eventinfos[events.index(eventselect)])
+    return(currentevent, eventinfo, events, currentevents)
 
 def getschedule(team, year, event, level):
       matchnumber = []
@@ -128,8 +135,9 @@ def displayteamdata(rankdata, teamrp):
       st.write("Qualification Average Points: " + str(rankdata["Rankings"][0]["qualAverage"]))
       st.write("Total Ranking Points: " + str(teamrp))
 
-def displayschedule(team, eventstartdate, eventenddate, scheduledf):
-      with st.expander("Event Schedule (" + eventstartdate + " - " + eventenddate + ")"):
+def displayschedule(team, eventinfo, scheduledf):
+      with st.expander("Event Schedule"):
+        st.write(eventinfo)
         def highlight_team(s):
           color = '#262730' if s == str(team) else ''
           return f'background-color: {color}'
