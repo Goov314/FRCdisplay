@@ -5,7 +5,7 @@ import datetime
 from PIL import Image
 from streamlit_autorefresh import st_autorefresh as autoref
 
-from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings, getdistrictrank
+from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings, getdistrictrank, getawards
 
 st.set_page_config(page_title="FRC Display", page_icon=Image.open("FRCdisplayicon.png"), layout="centered", initial_sidebar_state="expanded", menu_items=None)
 st.logo(Image.open("FRCexpandedicon.png"), size="large", icon_image=Image.open("FRCdisplayicon.png"))
@@ -49,6 +49,9 @@ if team:
     displayrankings(team, rankingdf)
 
     getdistrictrank(team, year, districtcode, events, currentevents)
+
+    getawards(team, year, teamdata["rookieYear"])
+
 
 
 

@@ -222,5 +222,31 @@ def getdistrictrank(team, year, districtcode, events, eventcodes):
       st.write("District Event: " + districtcomp + " - Ranking Points: " + str(districtcomppoints))
       st.write("Qualified for District Event: " + qdist + " - Qualified for World Championships: " + qworld)
 
+def getawards(team, year, rookieyear):
+    awardyear = []
+    awardname = []
+    for currentyear in range(int(year), int(rookieyear) - 1, -1):
+      url = f"https://frc-api.firstinspires.org/v3.0/{currentyear}/awards/team/{team}"
+      payload={}
+      headers = {
+        'Authorization': token,
+        'If-Modified-Since': ''
+      }
+      response = requests.request("GET", url, headers=headers, data=payload)
+      awarddata = response.json()
+      for award in awarddata["Awards"]:
+        if currentyear not in awardyear:
+          awardyear.append(currentyear)
+        else:
+          awardyear.append("")
+        awardname.append(award["name"])
+
+    awarddf = pd.DataFrame({
+        'Year': awardyear,
+        'Award': awardname,
+    })
+    with st.expander("Awards"):
+      st.dataframe(awarddf)
+
 
 
