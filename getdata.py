@@ -225,28 +225,29 @@ def getdistrictrank(team, year, districtcode, events, eventcodes):
 def getawards(team, year, rookieyear):
     awardyear = []
     awardname = []
-    for currentyear in range(int(year), int(rookieyear) - 1, -1):
-      url = f"https://frc-api.firstinspires.org/v3.0/{currentyear}/awards/team/{team}"
-      payload={}
-      headers = {
-        'Authorization': token,
-        'If-Modified-Since': ''
-      }
-      response = requests.request("GET", url, headers=headers, data=payload)
-      awarddata = response.json()
-      for award in awarddata["Awards"]:
-        if currentyear not in awardyear:
-          awardyear.append(currentyear)
-        else:
-          awardyear.append("")
-        awardname.append(award["name"])
+    with st.spinner(text="Fetching Data..."):
+      for currentyear in range(int(year), int(rookieyear) - 1, -1):
+        url = f"https://frc-api.firstinspires.org/v3.0/{currentyear}/awards/team/{team}"
+        payload={}
+        headers = {
+          'Authorization': token,
+          'If-Modified-Since': ''
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        awarddata = response.json()
+        for award in awarddata["Awards"]:
+          if currentyear not in awardyear:
+            awardyear.append(currentyear)
+          else:
+            awardyear.append("")
+          awardname.append(award["name"])
 
-    awarddf = pd.DataFrame({
-        'Year': awardyear,
-        'Award': awardname,
-    })
-    with st.expander("Awards"):
-      st.dataframe(awarddf)
+      awarddf = pd.DataFrame({
+          'Year': awardyear,
+          'Award': awardname,
+      })
+      with st.expander("Awards"):
+        st.dataframe(awarddf)
 
 
 
