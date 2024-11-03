@@ -13,7 +13,27 @@ def getteamdata(team, year):
       'If-Modified-Since': ''
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    return(response.json()["teams"][0])
+    teamdata = response.json()["teams"][0]
+    
+    districtcode = teamdata["districtCode"]
+    rookieyear = teamdata["rookieYear"]
+
+    url = f"https://frc-api.firstinspires.org/v3.0/{year}/avatars?teamNumber={team}"
+    payload={}
+    headers = {
+      'Authorization': token,
+      'If-Modified-Since': ''
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    teamavatardata = response.json()["teams"][0]
+
+    with st.expander("Team Data"):
+      st.write("Team" + team + ", " + teamdata["nameShort"])
+      st.write("From " + teamdata["schoolName"] + " in " + teamdata["city"] + ", " + teamdata["stateProv"] + ", " + teamdata["country"])
+      st.write("Rookie Year: " + str(teamdata["rookieYear"]))
+      st.write("Sponsors: " + str(teamdata["nameFull"].replace("/", ", ")).replace("&", " and "))
+
+    return(districtcode, rookieyear)
 
 def getcompetitions(team, year):
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/events?eventCode=&teamNumber={team}&districtCode=&excludeDistrict=&weekNumber&tournamentType"
@@ -128,7 +148,7 @@ def getteamrank(team, year, event, level):
       return(rankdata)
 
 def displayteamdata(rankdata, teamrp):
-    with st.expander("Team Data"):
+    with st.expander("Team Event Data"):
       st.write("Rank: " + str(rankdata["Rankings"][0]["rank"]))
       st.write("W/T/L: " + str(rankdata["Rankings"][0]["wins"]) + "/" + str(rankdata["Rankings"][0]["ties"]) + "/" + str(rankdata["Rankings"][0]["losses"]))
       st.write("Matches Played: " + str(rankdata["Rankings"][0]["matchesPlayed"]))

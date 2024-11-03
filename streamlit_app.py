@@ -4,7 +4,6 @@ import pandas as pd
 import datetime
 from PIL import Image
 from streamlit_autorefresh import st_autorefresh as autoref
-
 from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings, getdistrictrank, getawards
 
 st.set_page_config(page_title="FRC Display", page_icon=Image.open("FRCdisplayicon.png"), layout="centered", initial_sidebar_state="expanded", menu_items=None)
@@ -21,9 +20,7 @@ team = st.sidebar.text_input("Team Number",
 if team:
   st.query_params.team = team
 
-  teamdata = getteamdata(team, year)
-  st.write("Team **" + team + "**, **" + teamdata["nameShort"] + "**, from **" + teamdata["schoolName"] + "** in **" + teamdata["city"] + "**, " + teamdata["stateProv"] + ", " + teamdata["country"] + ". Rookie Year: " + str(teamdata["rookieYear"]))
-  districtcode = teamdata["districtCode"]
+  districtcode, rookieyear = getteamdata(team, year)
 
   currentevents = []
   events = []
@@ -50,8 +47,7 @@ if team:
 
     getdistrictrank(team, year, districtcode, events, currentevents)
 
-    getawards(team, year, teamdata["rookieYear"])
-
+    getawards(team, year, rookieyear)
 
 
 
