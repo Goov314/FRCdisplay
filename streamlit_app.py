@@ -55,3 +55,4 @@ checkbox = st.sidebar.checkbox("Auto Refresh?", value=st.query_params.refresh if
 if checkbox:
   autoref(interval=60000)
   st.query_params.refresh = checkbox
+
