@@ -28,7 +28,7 @@ def getteamdata(team, year):
     teamavatardata = response.json()["teams"][0]
 
     with st.expander("Team Data"):
-      st.write("Team" + team + ", " + teamdata["nameShort"])
+      st.write("Team " + team + ", " + teamdata["nameShort"])
       st.write("From " + teamdata["schoolName"] + " in " + teamdata["city"] + ", " + teamdata["stateProv"] + ", " + teamdata["country"])
       st.write("Rookie Year: " + str(teamdata["rookieYear"]))
       st.write("Sponsors: " + str(teamdata["nameFull"].replace("/", ", ")).replace("&", " and "))
