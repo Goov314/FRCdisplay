@@ -22,37 +22,41 @@ if team:
 
   districtcode, rookieyear = getteamdata(team, year)
 
-  currentevents = []
-  events = []
-  currentevent, eventinfo, events, currentevents = getcompetitions(team, year)
-  
-  level_list = ["Qualification", "Playoff"]
-  levelindex = level_list.index(st.query_params.level) if "level" in st.query_params else 0
-  level = st.sidebar.selectbox("Level:", level_list, index=levelindex)
-  if level:
-      st.query_params.level = level
+  if districtcode and rookieyear:
 
-  if currentevent and level:
+    currentevents = []
+    events = []
+    currentevent, eventinfo, events, currentevents = getcompetitions(team, year)
     
-    rankdata = getteamrank(team, year, currentevent, level)
-    scheduledf, teamrp = getschedule(team, year, currentevent, level)
+    level_list = ["Qualification", "Playoff"]
+    levelindex = level_list.index(st.query_params.level) if "level" in st.query_params else 0
+    level = st.sidebar.selectbox("Level:", level_list, index=levelindex)
+    if level:
+        st.query_params.level = level
 
-    displayteamdata(rankdata, teamrp)
+    if currentevent and level:
+      
+      rankdata = getteamrank(team, year, currentevent, level)
+      scheduledf, teamrp = getschedule(team, year, currentevent, level)
 
-    displayschedule(team, eventinfo, scheduledf)
-    
-    rankingdf = gettopteams(team, year, currentevent, level)
-    
-    displayrankings(team, rankingdf)
+      displayteamdata(rankdata, teamrp)
 
-    getdistrictrank(team, year, districtcode, events, currentevents)
+      displayschedule(team, eventinfo, scheduledf)
+      
+      rankingdf = gettopteams(team, year, currentevent, level)
+      
+      displayrankings(team, rankingdf)
 
-    getawards(team, year, rookieyear)
+      getdistrictrank(team, year, districtcode, events, currentevents)
+
+      getawards(team, year, rookieyear)
+  else:
+    st.write("Team does not exist.")
 
 
 
-checkbox = st.sidebar.checkbox("Auto Refresh?", value=st.query_params.refresh if "refresh" in st.query_params else 0)
-if checkbox:
-  autoref(interval=60000)
-  st.query_params.refresh = checkbox
+  checkbox = st.sidebar.checkbox("Auto Refresh?", value=st.query_params.refresh if "refresh" in st.query_params else 0)
+  if checkbox:
+    autoref(interval=60000)
+    st.query_params.refresh = checkbox
 
