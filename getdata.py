@@ -29,11 +29,15 @@ def getteamdata(team, year):
         'If-Modified-Since': ''
       }
       response = requests.request("GET", url, headers=headers, data=payload)
-      teamavatardata = response.json()["teams"][0]
+      teamavatardata = response.json()["teams"]
 
-      base64image = teamavatardata["encodedAvatar"]
-      bytesimage = base64.b64decode(base64image)
-      teamavatar = Image.open(BytesIO(bytesimage))
+      if teamavatardata:
+
+        base64image = teamavatardata[0]["encodedAvatar"]
+        bytesimage = base64.b64decode(base64image)
+        teamavatar = Image.open(BytesIO(bytesimage))
+      else:
+        teamavatar = Image.open("FRCdisplayicon.png")
 
       with st.expander("Team Data"):
         st.write("Team " + team + ", " + teamdata["nameShort"])
@@ -260,6 +264,7 @@ def getdistrictrank(team, year, districtcode, events, eventcodes):
 def getawards(team, year, rookieyear):
     awardyear = []
     awardname = []
+    awardata = ""
     with st.spinner(text="Fetching Data..."):
       for currentyear in range(int(year), int(rookieyear) - 1, -1):
         url = f"https://frc-api.firstinspires.org/v3.0/{currentyear}/awards/team/{team}"
@@ -269,20 +274,24 @@ def getawards(team, year, rookieyear):
           'If-Modified-Since': ''
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        awarddata = response.json()
-        for award in awarddata["Awards"]:
-          if currentyear not in awardyear:
-            awardyear.append(currentyear)
-          else:
-            awardyear.append("")
-          awardname.append(award["name"])
-
-      awarddf = pd.DataFrame({
-          'Year': awardyear,
-          'Award': awardname,
-      })
+        if response:
+          awarddata = response.json()
+          for award in awarddata["Awards"]:
+            if currentyear not in awardyear:
+              awardyear.append(currentyear)
+            else:
+              awardyear.append("")
+            awardname.append(award["name"])
+      if awardata:
+        awarddf = pd.DataFrame({
+            'Year': awardyear,
+            'Award': awardname,
+        })
       with st.expander("Awards"):
-        st.dataframe(awarddf)
+        if awardata:
+          st.dataframe(awarddf)
+        else:
+          st.write(f"Team {team} has not won any awards.")
 
 
 

@@ -25,7 +25,7 @@ if team:
   districtcode, rookieyear, teamavatar = getteamdata(team, year)
   st.logo(Image.open("FRCexpandedicon.png"), size="large", icon_image=teamavatar)
 
-  if districtcode and rookieyear:
+  if rookieyear:
 
     currentevents = []
     events = []
