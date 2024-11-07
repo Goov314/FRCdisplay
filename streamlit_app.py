@@ -54,7 +54,7 @@ if team:
 
       getawards(team, year, rookieyear)
   else:
-    st.write("Team does not exist.")
+    st.write(f"Team **{team}** does not exist.")
 
 
 

@@ -43,7 +43,7 @@ def getteamdata(team, year):
 
       return(districtcode, rookieyear, teamavatar)
     else:
-      return("","")
+      return("","", Image.open("FRCdisplayicon.png"))
 
 def getcompetitions(team, year):
     url = f"https://frc-api.firstinspires.org/v3.0/{year}/events?eventCode=&teamNumber={team}&districtCode=&excludeDistrict=&weekNumber&tournamentType"
