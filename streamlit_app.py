@@ -3,6 +3,8 @@ import requests
 import pandas as pd
 import datetime
 from PIL import Image
+from io import BytesIO
+import base64
 from streamlit_autorefresh import st_autorefresh as autoref
 from getdata import getteamdata, getcompetitions, getschedule, getteamrank, displayteamdata, displayschedule, gettopteams, displayrankings, getdistrictrank, getawards
 
@@ -20,7 +22,8 @@ team = st.sidebar.text_input("Team Number",
 if team:
   st.query_params.team = team
 
-  districtcode, rookieyear = getteamdata(team, year)
+  districtcode, rookieyear, teamavatar = getteamdata(team, year)
+  st.logo(Image.open("FRCexpandedicon.png"), size="large", icon_image=teamavatar)
 
   if districtcode and rookieyear:
 

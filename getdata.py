@@ -2,6 +2,9 @@ import streamlit as st
 import requests
 import pandas as pd
 import datetime
+from PIL import Image
+from io import BytesIO
+import base64
 
 token = st.secrets['TOKEN']
 
@@ -28,13 +31,17 @@ def getteamdata(team, year):
       response = requests.request("GET", url, headers=headers, data=payload)
       teamavatardata = response.json()["teams"][0]
 
+      base64image = teamavatardata["encodedAvatar"]
+      bytesimage = base64.b64decode(base64image)
+      teamavatar = Image.open(BytesIO(bytesimage))
+
       with st.expander("Team Data"):
         st.write("Team " + team + ", " + teamdata["nameShort"])
         st.write("From " + teamdata["schoolName"] + " in " + teamdata["city"] + ", " + teamdata["stateProv"] + ", " + teamdata["country"])
         st.write("Rookie Year: " + str(teamdata["rookieYear"]))
         st.write("Sponsors: " + str(teamdata["nameFull"].replace("/", ", ")).replace("&", " and "))
 
-      return(districtcode, rookieyear)
+      return(districtcode, rookieyear, teamavatar)
     else:
       return("","")
 
