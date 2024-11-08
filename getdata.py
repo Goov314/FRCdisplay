@@ -282,13 +282,13 @@ def getawards(team, year, rookieyear):
             else:
               awardyear.append("")
             awardname.append(award["name"])
-      if awardata:
+      if awardyear:
         awarddf = pd.DataFrame({
             'Year': awardyear,
             'Award': awardname,
         })
       with st.expander("Awards"):
-        if awardata:
+        if awardyear:
           st.dataframe(awarddf)
         else:
           st.write(f"Team {team} has not won any awards.")
